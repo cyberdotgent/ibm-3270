@@ -1,3 +1,12 @@
+ibm-3270 (4.3ga10-5+s390x1) trixie; urgency=medium
+
+  * Proxmox VE s390x port: add debian/patches/unix-socket-host.patch, a U:
+    host prefix to connect to a TN3270 server on a Unix-domain socket
+    (QEMU x-terminal3270 / sclp3270 consoles on /var/run/qemu-server/*).
+    Backport of a change prepared for upstream (github.com/pmattes/x3270).
+
+ -- Yvan Janssens <yvanj@cyber.gent>  Wed, 18 Nov 2026 11:57:30 +0100
+
 ibm-3270 (4.3ga10-5) unstable; urgency=medium
 
   * Regenerate TLS certs during build.  (Closes: #1104884)
