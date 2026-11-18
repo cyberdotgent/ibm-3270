@@ -4,7 +4,7 @@ Description: Add U: host prefix to connect to a Unix-domain socket
  x-terminal3270 behind -chardev socket,path=...,tn3270=on), e.g.
  "c3270 U:/run/qemu-server/100.tn3270". Backport to 4.3ga10.
 Author: Yvan Janssens <yvanj@cyber.gent>
-Origin: other, https://github.com/cyberdotgent/x3270/commit/549eaefe844e9ae78638d230bf33b662aa6d5779
+Origin: other, https://github.com/cyberdotgent/x3270/compare/4.3ga10...bbab3350 (branch unix-socket-host-4.3ga10)
 Forwarded: not-yet (prepared for https://github.com/pmattes/x3270, main-branch version: https://github.com/cyberdotgent/x3270/commit/4d0e0bb206caa030dd7fbac0d33fe34b509b325e)
 Last-Update: 2026-11-18
 ---
@@ -350,7 +350,7 @@ index 03248674..f5d16bea 100644
  #define HOST_nFLAG(flags, t)    ((flags & (1 << t)) != 0)
  
 diff --git a/s3270/Test/testConnectFail.py b/s3270/Test/testConnectFail.py
-index 734c8c97..d3b40f84 100755
+index 734c8c97..f5a8a4fe 100755
 --- a/s3270/Test/testConnectFail.py
 +++ b/s3270/Test/testConnectFail.py
 @@ -30,6 +30,8 @@
@@ -362,7 +362,7 @@ index 734c8c97..d3b40f84 100755
  import Common.Test.cti as cti
  
  class TestS3270ConnectFail(cti.cti):
-@@ -58,5 +60,50 @@ class TestS3270ConnectFail(cti.cti):
+@@ -58,5 +60,51 @@ class TestS3270ConnectFail(cti.cti):
          self.assertEqual('error', stdout[2])
          self.assertEqual('', stdout[3])
  
@@ -408,7 +408,8 @@ index 734c8c97..d3b40f84 100755
 +        self.vgwait(s3270)
 +
 +        # Test the output.
-+        self.assertTrue(stdout[0].startswith('data: Hostname syntax error: port not allowed with U:'), stdout[0])
++        self.assertTrue(stdout[0].startswith('data: Hostname syntax error'), stdout[0])
++        self.assertTrue('port not allowed with U:' in stdout[0], stdout[0])
 +        self.assertEqual('error', stdout[-2])
 +
  if __name__ == '__main__':
