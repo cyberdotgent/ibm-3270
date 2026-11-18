@@ -1,0 +1,7 @@
+Once this package is properly installed on your system, the fonts are
+available to X. However, if your X session was started before the
+package was installed or upgraded, this session doesn't know about the
+just-installed fonts. In order for it to see the fonts, you can either
+run "xset fp rehash" as the user who started this X session (and of
+course with the DISPLAY environment variable appropriately set) or
+restart the X session.

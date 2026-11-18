@@ -1,0 +1,84 @@
+Index: ibm-3270-4.3ga10/Common/Test/json_test.c
+===================================================================
+--- ibm-3270-4.3ga10.orig/Common/Test/json_test.c
++++ ibm-3270-4.3ga10/Common/Test/json_test.c
+@@ -33,9 +33,11 @@
+ #include "globals.h"
+ 
+ #include <assert.h>
++#include <math.h>
+ #include <signal.h>
+ #include <setjmp.h>
+ #include <fcntl.h>
++#include <float.h>
+ 
+ #include "json.h"
+ #include "sa_malloc.h"
+@@ -64,13 +66,17 @@ static int old_stderr;
+ #define SIGABRT_START \
+     signal(SIGABRT, sigabrt); \
+     (void)dup2(dev_null, 2); \
+-    if (!setjmp(jbuf)) {
++    if (!sigsetjmp(jbuf, 1)) {
+ #define SIGABRT_END \
+     } \
+     signal(SIGABRT, SIG_DFL); \
+     (void)dup2(old_stderr, 2); \
+     assert(got_sigabrt);
+ 
++bool double_equals(double a, double b) {
++    return fabs(a - b) < DBL_EPSILON;
++}
++
+ static void positive_parse_tests(void);
+ static void negative_parse_tests(void);
+ static void get_tests(void);
+@@ -247,9 +253,9 @@ positive_parse_tests(void)
+     assert(errcode == JE_OK);
+     assert(json_is_array(j));
+     assert(json_array_length(j) == 3);
+-    assert(json_double_value(json_array_element(j, 0)) == 1.2);
+-    assert(json_double_value(json_array_element(j, 1)) == 2.3);
+-    assert(json_double_value(json_array_element(j, 2)) == 3.4);
++    assert(double_equals(json_double_value(json_array_element(j, 0)), 1.2));
++    assert(double_equals(json_double_value(json_array_element(j, 1)), 2.3));
++    assert(double_equals(json_double_value(json_array_element(j, 2)), 3.4));
+     CLEAN_UP_BOTH;
+ 
+     /* Test an empty array. */
+@@ -670,7 +676,7 @@ get_tests(void)
+ #define TEST_DOUBLE "3.14"
+     json_parse_s(TEST_DOUBLE, &j, &e);
+     d = json_double_value(j);
+-    assert(d == 3.14);
++    assert(double_equals(d, 3.14));
+     CLEAN_UP_BOTH;
+ 
+     json_parse_s(TEST_INT, &j, &e);
+@@ -857,7 +863,7 @@ set_tests(void)
+     /* Construct a double. */
+     j = json_double(1.2345);
+     assert(json_is_double(j));
+-    assert(json_double_value(j) == 1.2345);
++    assert(double_equals(json_double_value(j), 1.2345));
+     json_free(j);
+ 
+     /* Construct an object. */
+@@ -998,7 +1004,7 @@ clone_tests(void)
+     j = json_double(3.14);
+     k = json_clone(j);
+     assert(json_is_double(k));
+-    assert(json_double_value(k) == 3.14);
++    assert(double_equals(json_double_value(k), 3.14));
+     json_free(k);
+     CLEAN_UP;
+ 
+@@ -1043,7 +1049,7 @@ clone_tests(void)
+     assert(json_array_length(k) == 2);
+     assert(json_is_array(json_array_element(k, 0)));
+     assert(json_integer_value(json_array_element(json_array_element(k, 0), 0)) == 1);
+-    assert(json_double_value(json_array_element(k, 1)) == 9.99);
++    assert(double_equals(json_double_value(json_array_element(k, 1)), 9.99));
+     json_free(k);
+     CLEAN_UP;
+ }

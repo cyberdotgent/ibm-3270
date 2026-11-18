@@ -1,0 +1,11 @@
+?package(c3270): \
+	section="Applications/Network/Communication" \
+	needs="text" \
+	command="/usr/bin/c3270" \
+	title="C3270" \
+	longtitle="C3270: Curses program for telnet sessions to IBM mainframes"\
+	description="c3270 opens a telnet connection to an IBM mainframe\
+	host in an virtual console.  It can also connect to an IBM AS/400 as a\
+	5250 terminal using the AS/400's 3270 emulation.  The window created\
+	by c3270 can use its own font for displaying characters, so it is a\
+	fairly accurate representation of an IBM 3278 or 3279."

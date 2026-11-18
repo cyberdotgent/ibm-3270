@@ -1,0 +1,53 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE=1
+export AUTOHEADER=true
+export DEB_BUILD_MAINT_OPTIONS=hardening=+pie
+CFLAGS:=$(shell dpkg-buildflags --get CFLAGS)
+CPPFLAGS:=$(shell dpkg-buildflags --get CPPFLAGS)
+export LOGNAME:=buildd
+export PATH:=/bin:/usr/bin
+
+%:
+	dh $@
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -rf obj/ lib/32xx/32xx-deplibs.mk x3270/x3270-icon2.png
+	find . \
+		-name Makefile -or \
+		-name Makefile.obj -or \
+		-name Makefile.test -or \
+		-name Makefile.test.obj -or \
+		-name config.log -or \
+		-name config.status -or \
+	       	-name conf.h -or \
+		-name *.cer -or \
+		-name *.pem -or \
+		-name *.key | xargs -r rm
+
+override_dh_auto_configure:
+	dh_auto_configure -- \
+		--with-fontdir=/usr/share/fonts/X11/misc \
+		--enable-x3270 \
+		--enable-c3270 \
+		--enable-s3270 \
+		--enable-b3270 \
+		--enable-tcl3270 \
+		--enable-pr3287 \
+		--enable-x3270if \
+		--enable-lib \
+		CCOPTIONS='$(CFLAGS)'
+	(cd Common/Test/tls/ && ./mkca.bash && ./mkcert.bash)
+
+override_dh_auto_build:
+	dh_auto_build
+	convert x3270/x3270-icon2.xpm x3270/x3270-icon2.png
+
+override_dh_auto_install:
+	# Presence required for the build system to actually install the
+	# icons and desktop file.
+	mkdir -p \
+		debian/tmp/usr/share/icons/hicolor/ \
+		debian/tmp/usr/share/applications/
+	dh_auto_install --no-parallel -- install.man

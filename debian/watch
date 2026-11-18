@@ -1,0 +1,2 @@
+version=4
+http://x3270.bgp.nu/download.html http://x3270.bgp.nu/download/.+/suite3270-([\d\.]+ga\d+)-src.tgz

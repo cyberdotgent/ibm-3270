@@ -1,0 +1,99 @@
+Source: ibm-3270
+Section: net
+Priority: optional
+Maintainer: Philipp Kern <pkern@debian.org>
+Standards-Version: 3.9.7
+Build-Depends: debhelper-compat (= 13), libncurses-dev, libssl-dev, libxaw7-dev, libxt-dev, xbitmaps, xfonts-utils, xutils-dev, tcl, tcl-dev, libexpat1-dev, imagemagick, python3, python3-requests, python3-psutil, net-tools, openssl
+Rules-Requires-Root: no
+Homepage: http://x3270.bgp.nu/
+
+Package: x3270
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, 3270-common (= ${binary:Version})
+Recommends: xfonts-x3270-misc
+Description: X11 program for telnet sessions to IBM mainframes
+ x3270 opens a telnet connection to an IBM mainframe host in an X11
+ window.  It can also connect to an IBM AS/400 as a 5250 terminal
+ using the AS/400's 3270 emulation.  The window created by x3270 can
+ use its own font for displaying characters, so it is a fairly
+ accurate representation of an IBM 3278 or 3279.
+ .
+ x3270 is similar to tn3270(1) and c3270(1) except that it is X-based,
+ not curses-based.
+ .
+ x3270 implements RFCs 2355 (TN3270E), 1576 (TN3270),
+ and 1646 (LU name selection), and supports IND$FILE file transfer.
+ .
+ You will need to install x3270's fonts locally, or on your font-server -
+ they are required.
+
+Package: c3270
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, 3270-common (= ${binary:Version})
+Description: Curses program for telnet sessions to IBM mainframes
+ c3270 opens a telnet connection to an IBM mainframe host in an Xterm
+ window or Virtual Console.  It can also connect to an IBM AS/400 as 
+ a 5250 terminal using the AS/400's 3270 emulation.
+ .
+ c3270 is similar to tn3270(1), and x3270(1) except that it is curses-based,
+ not X-based.
+ .
+ c3270 implements RFCs 2355 (TN3270E), 1576 (TN3270),
+ and 1646 (LU name selection), and supports IND$FILE file transfer.
+
+Package: pr3287
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, 3270-common (= ${binary:Version})
+Description: IBM 3287 printer emulation for telnet sessions to IBM mainframes
+ pr3287 opens a telnet connection to an IBM mainframe host and emulates an
+ IBM 3287 printer.
+ .
+ pr3278 implements RFCs 2355 (TN3270E), 1576 (TN3270),
+ and 1646 (LU name selection).
+
+Package: s3270
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, 3270-common (= ${binary:Version})
+Description: Program for scripted telnet sessions to IBM mainframes
+ s3270 opens a telnet connection to an IBM mainframe host, then allows a 
+ script to control the host login session.
+ .
+ s3270 implements RFCs 2355 (TN3270E), 1576 (TN3270),
+ and 1646 (LU name selection), and supports IND$FILE file transfer.
+
+Package: tcl3270
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, s3270 (= ${binary:Version}), 3270-common (= ${binary:Version})
+Description: Program for Tcl-scripted telnet sessions to IBM mainframes
+ tcl3270 opens a telnet connection to an IBM mainframe host, then allows a 
+ Tcl script to control the host login session.
+ .
+ tcl3270 implements RFCs 2355 (TN3270E), 1576 (TN3270),
+ and 1646 (LU name selection), and supports IND$FILE file transfer.
+
+Package: b3270
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, 3270-common (= ${binary:Version})
+Description: Backend tool for telnet sessions to IBM mainframes
+ b3270 opens a telnet connection to an IBM host, handling the 3270,
+ TELNET and TLS protocols, allowing a front-end application handle user
+ interactions. It uses XML on its standard input and standard output to
+ communicate with the front end.
+ .
+ b3270 implements RFCs 2355 (TN3270E), 1576 (TN3270) and 1646 (LU name
+ selection), and supports IND$FILE file transfer.
+
+Package: 3270-common
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Common files for IBM 3270 emulators and pr3287
+ 3270-common contains files referenced in other 3270 packages
+
+Package: xfonts-x3270-misc
+Architecture: all
+Multi-Arch: foreign
+Section: fonts
+Depends: ${misc:Depends}
+Description: Font files for the x3270(1) IBM 3270 emulator
+ x3270-fonts provides only the fonts required for x3270 operation, so that
+ the fonts may be installed separately on a font-server.

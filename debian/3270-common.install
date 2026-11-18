@@ -1,0 +1,4 @@
+etc/3270
+usr/bin/x3270if
+usr/share/man/man1/x3270if.1
+usr/share/man/man5/ibm_hosts.5

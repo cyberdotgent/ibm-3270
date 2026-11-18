@@ -1,0 +1,65 @@
+Index: ibm-3270-4.3ga10/c3270/configure.in
+===================================================================
+--- ibm-3270-4.3ga10.orig/c3270/configure.in
++++ ibm-3270-4.3ga10/c3270/configure.in
+@@ -152,7 +152,7 @@ AC_PATH_PROG(MOREPATH, more)
+ AC_DEFINE_UNQUOTED(MOREPATH,"$MOREPATH")
+ 
+ dnl Set up the configuration directory.
+-LIBX3270DIR='${sysconfdir}/x3270'
++LIBX3270DIR='${sysconfdir}/3270'
+ AC_SUBST(LIBX3270DIR)
+ 
+ dnl Check for unwanted parts.
+Index: ibm-3270-4.3ga10/pr3287/configure.in
+===================================================================
+--- ibm-3270-4.3ga10.orig/pr3287/configure.in
++++ ibm-3270-4.3ga10/pr3287/configure.in
+@@ -98,7 +98,7 @@ dnl Checks for library functions.
+ AC_CHECK_FUNCS(vasprintf)
+ 
+ dnl Set up the configuration directory.
+-LIBX3270DIR='${sysconfdir}/x3270'
++LIBX3270DIR='${sysconfdir}/3270'
+ AC_SUBST(LIBX3270DIR)
+ 
+ dnl Check for unwanted parts.
+Index: ibm-3270-4.3ga10/s3270/configure.in
+===================================================================
+--- ibm-3270-4.3ga10.orig/s3270/configure.in
++++ ibm-3270-4.3ga10/s3270/configure.in
+@@ -77,7 +77,7 @@ AC_CHECK_FUNCS(vasprintf)
+ AC_FUNC_FSEEKO
+ 
+ dnl Set up the configuration directory.
+-LIBX3270DIR='${sysconfdir}/x3270'
++LIBX3270DIR='${sysconfdir}/3270'
+ AC_SUBST(LIBX3270DIR)
+ 
+ dnl Check for unwanted parts.
+Index: ibm-3270-4.3ga10/tcl3270/configure.in
+===================================================================
+--- ibm-3270-4.3ga10.orig/tcl3270/configure.in
++++ ibm-3270-4.3ga10/tcl3270/configure.in
+@@ -115,7 +115,7 @@ then	AC_CHECK_LIB(tcl$tclvr, Tcl_Init, ,
+ fi
+ 
+ dnl Set up the configuration directory.
+-LIBX3270DIR='${sysconfdir}/x3270'
++LIBX3270DIR='${sysconfdir}/3270'
+ AC_SUBST(LIBX3270DIR)
+ 
+ dnl Check for unwanted parts.
+Index: ibm-3270-4.3ga10/x3270/configure.in
+===================================================================
+--- ibm-3270-4.3ga10.orig/x3270/configure.in
++++ ibm-3270-4.3ga10/x3270/configure.in
+@@ -97,7 +97,7 @@ esac
+ AC_SUBST(CIFONTDIR)
+ 
+ # Set up the configuration directory.
+-LIBX3270DIR='${sysconfdir}/x3270'
++LIBX3270DIR='${sysconfdir}/3270'
+ AC_SUBST(LIBX3270DIR)
+ 
+ dnl Check for other libraries.
