@@ -1,3 +1,12 @@
+ibm-3270 (4.3ga10-5+s390x2) trixie; urgency=medium
+
+  * Proxmox VE s390x port: add debian/patches/hide-suppressed-menu-items.patch:
+    c3270 leaves the menu items out whose actions are suppressed with the
+    suppressActions resource (e.g. Disconnect and Quit), instead of offering
+    items that do nothing.
+
+ -- Yvan Janssens <yvanj@cyber.gent>  Thu, 19 Nov 2026 10:25:44 +0100
+
 ibm-3270 (4.3ga10-5+s390x1) trixie; urgency=medium
 
   * Proxmox VE s390x port: add debian/patches/unix-socket-host.patch, a U:
