@@ -1,0 +1,146 @@
+Description: c3270: hide menu items whose actions are suppressed
+ The suppressActions resource keeps actions from running, but the c3270
+ menus still offered the items that run them: chosen, they did nothing.
+ Leave the File menu items out whose actions are suppressed (for example
+ Disconnect and Quit), the Options menu if Toggle is suppressed and the
+ Keypad menu if Keypad is suppressed. action_suppressed() becomes public for
+ that, and renaming or enabling an item that is not in the menu is a no-op.
+Author: Yvan Janssens <yvanj@cyber.gent>
+Forwarded: no
+Last-Update: 2026-11-19
+---
+--- a/Common/actions.c
++++ b/Common/actions.c
+@@ -117,7 +117,7 @@
+ }
+ 
+ /* Look up an action name in the suppressed actions resource. */
+-static bool
++bool
+ action_suppressed(const char *name)
+ {
+     suppress_t *s;
+--- a/Common/c3270/menubar.c
++++ b/Common/c3270/menubar.c
+@@ -237,6 +237,9 @@
+ void
+ enable_item(cmenu_item_t *i, bool enabled)
+ {
++    if (i == NULL) {
++	return;
++    }
+     i->enabled = enabled;
+     /* TODO: Do more here. */
+ }
+@@ -244,6 +247,9 @@
+ void
+ rename_item(cmenu_item_t *i, char *name)
+ {
++    if (i == NULL) {
++	return;
++    }
+     Replace(i->label, NewString(name));
+     if (strlen(name) + 2 > i->cmenu->width) {
+ 	i->cmenu->width = strlen(name) + 2;
+@@ -902,6 +908,57 @@
+     fm_quit
+ };
+ 
++/*
++ * The actions each File menu item runs, separated by spaces. An item is left
++ * out of the menu if any of them is suppressed (the suppressActions resource).
++ */
++static const char *file_menu_action_names[FM_COUNT] = {
++    AnEscape " " AnShow,	/* Copyright */
++    AnEscape " " AnShow,	/* Status */
++    AnEscape " " AnShow,	/* About */
++    AnEscape,			/* Prompt */
++    AnPrintText,		/* Print Screen */
++    AnEscape " " AnTransfer,	/* File Transfer */
++    AnTrace,			/* Tracing */
++    AnScreenTrace,		/* Save Screen Images in File */
++    AnScreenTrace,		/* Save Screen Images to Printer */
++    AnSaveInput,		/* Save Input Fields */
++    AnRestoreInput,		/* Restore Input Fields */
++    AnEscape " " AnShow,	/* Display Keymap */
++#if defined(HAVE_START) /*[*/
++    NULL,			/* Help */
++#endif /*]*/
++#if defined(_WIN32) /*[*/
++    NULL,			/* Session Wizard */
++    NULL,			/* Edit Session */
++#endif /*]*/
++    AnKeyboardDisable,		/* Re-enable Keyboard */
++    AnDisconnect,		/* Disconnect */
++    AnQuit			/* Quit */
++};
++
++/* Returns true if any of a space-separated list of actions is suppressed. */
++static bool
++any_action_suppressed(const char *names)
++{
++    char *list;
++    char *name;
++    bool suppressed = false;
++
++    if (names == NULL) {
++	return false;
++    }
++    list = NewString(names);
++    for (name = strtok(list, " "); name != NULL; name = strtok(NULL, " ")) {
++	if (action_suppressed(name)) {
++	    suppressed = true;
++	    break;
++	}
++    }
++    Free(list);
++    return suppressed;
++}
++
+ static file_menu_enum fm_insecure[] = {
+     FM_PROMPT,
+     FM_PRINT,
+@@ -1060,6 +1117,9 @@
+ 		continue;
+ 	    }
+ 	}
++	if (any_action_suppressed(file_menu_action_names[f])) {
++	    continue;
++	}
+ #if defined(WC3270) /*[*/
+ 	if (f == FM_WIZARD_SESS && profile_path == NULL) {
+ 	    continue;
+@@ -1078,8 +1138,11 @@
+ 		    file_menu_actions[f], NULL);
+ 	}
+     }
+-    options_menu = add_menu("Options");
+-    for (o = 0; o < OM_COUNT; o++) {
++    /* The Options menu changes toggles, like the Toggle action. */
++    if (!action_suppressed(AnToggle)) {
++	options_menu = add_menu("Options");
++    }
++    for (o = 0; options_menu != NULL && o < OM_COUNT; o++) {
+ 	char *name;
+ 
+ 	name = xs_buffer("%s %s",
+@@ -1089,8 +1152,10 @@
+ 		&option_index[o]);
+ 	Free(name);
+     }
+-    keypad_menu = add_menu("Keypad");
+-    set_callback(keypad_menu, popup_keypad, NULL);
++    if (!action_suppressed(AnKeypad)) {
++	keypad_menu = add_menu("Keypad");
++	set_callback(keypad_menu, popup_keypad, NULL);
++    }
+ 
+     /* Draw the menu names on the top line. */
+     draw_topline();
+--- a/include/actions.h
++++ b/include/actions.h
+@@ -75,3 +75,4 @@
+ bool keyboard_disabled(void);
+ const char *all_actions(void);
+ bool action_args_are(const char *name, ...);
++bool action_suppressed(const char *name);
